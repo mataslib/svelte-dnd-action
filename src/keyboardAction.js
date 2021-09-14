@@ -4,6 +4,7 @@ import {dispatchConsiderEvent, dispatchFinalizeEvent} from "./helpers/dispatcher
 import {initAria, alertToScreenReader} from "./helpers/aria";
 import {toString} from "./helpers/util";
 import {printDebug} from "./constants";
+import { resolveType } from "./helpers/resolveType";
 
 const DEFAULT_DROP_ZONE_TYPE = "--any--";
 const DEFAULT_DROP_TARGET_STYLE = {
@@ -227,7 +228,9 @@ export function dndzone(node, options) {
         printDebug(() => "drag start");
         setCurrentFocusedItem(e.currentTarget);
         focusedDz = node;
-        draggedItemType = config.type;
+        
+        const draggedItemData = dzToConfig.get(node).items[focusedItemId];
+        draggedItemType = resolveType(draggedItemData, config);
         isDragging = true;
         const dropTargets = Array.from(typeToDropZones.get(config.type)).filter(dz => dz === focusedDz || !dzToConfig.get(dz).dropFromOthersDisabled);
         styleActiveDropZones(

@@ -33,6 +33,7 @@ import {
 } from "./helpers/dispatcher";
 import {areArraysShallowEqualSameOrder, areObjectsShallowEqual, toString} from "./helpers/util";
 import {getBoundingRectNoTransforms} from "./helpers/intersection";
+import { resolveType } from "./helpers/resolveType";
 
 const DEFAULT_DROP_ZONE_TYPE = "--any--";
 const MIN_OBSERVATION_INTERVAL_MS = 100;
@@ -381,9 +382,9 @@ export function dndzone(node, options) {
         /** @type {ShadowRoot | HTMLDocument} */
         const rootNode = originDropZone.getRootNode();
         const originDropZoneRoot = rootNode.body || rootNode;
-        const {items, type, centreDraggedOnCursor} = config;
+        const {items, centreDraggedOnCursor} = config;
         draggedElData = {...items[currentIdx]};
-        draggedElType = type;
+        draggedElType = resolveType(draggedElData, config);
         shadowElData = {...draggedElData, [SHADOW_ITEM_MARKER_PROPERTY_NAME]: true};
         // The initial shadow element. We need a different id at first in order to avoid conflicts and timing issues
         const placeHolderElData = {...shadowElData, [ITEM_ID_KEY]: SHADOW_PLACEHOLDER_ITEM_ID};
@@ -406,7 +407,7 @@ export function dndzone(node, options) {
         window.requestAnimationFrame(keepOriginalElementInDom);
 
         styleActiveDropZones(
-            Array.from(typeToDropZones.get(config.type)).filter(dz => dz === originDropZone || !dzToConfig.get(dz).dropFromOthersDisabled),
+            Array.from(typeToDropZones.get(draggedElType)).filter(dz => dz === originDropZone || !dzToConfig.get(dz).dropFromOthersDisabled),
             dz => dzToConfig.get(dz).dropTargetStyle,
             dz => dzToConfig.get(dz).dropTargetClasses
         );

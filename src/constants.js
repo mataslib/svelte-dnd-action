@@ -24,6 +24,7 @@ export const SHADOW_PLACEHOLDER_ITEM_ID = "id:dnd-shadow-placeholder-0000";
 export const DRAGGED_ELEMENT_ID = "dnd-action-dragged-el";
 
 export let ITEM_ID_KEY = "id";
+export let TYPE_ID_KEY = "type";
 let activeDndZoneCount = 0;
 export function incrementActiveDropZoneCount() {
     activeDndZoneCount++;
